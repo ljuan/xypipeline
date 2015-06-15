@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<style>
+xmp {white-space:pre-wrap;word-wrap:break-word;word-break:break-all;}
+</style>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Servlet Test</title>
+            <script type="text/javascript">
+			function createXMLHttpRequest() {
+				var xmlHttp = false;
+				if (window.XMLHttpRequest){
+					xmlHttp = new XMLHttpRequest();
+				} else if (window.ActiveXObject) {
+					try{
+						xmlHttp = new ActiveXObject("Msxm12.XMLHTTP");
+					}
+					catch(e1){
+						try{
+							xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+						}
+						catch(e2){
+							
+						}
+					}
+				}
+				return xmlHttp;
+			}
+			var req = createXMLHttpRequest();
+			function update(){
+				 var param1=document.getElementById("p1").value;
+				 var param2=document.getElementById("p2").value;
+				 var param3=document.getElementById("p3").value;
+				 var param4=document.getElementById("p4").value;
+				 var param5=document.getElementById("p5").value;
+				 var querry="getPipelines";
+				 req.onreadystatechange = getReadyStateHandler;
+				 if(param5 == "getPipelines" || param5 == "getIndividuals" || param5 == "getFiles"){
+					querry="action="+param5;
+				} else if(param5 == "newIndividual" || param5 == "usingIndividual" || param5 == "releaseIndividual" || param5 == "removeIndividual"){
+					querry="action="+param5+"&id="+param4;
+				} else if(param5 == "getCommands"){
+					querry="action="+param5+"&pipeline="+param4;
+				} else if(param5 == "removeFile"){
+					querry="action="+param5+"&file="+param4;
+				} else if(param5 == "getParameters" || param5 == "run"){
+					querry="action="+param5+"&pipeline="+param4+"&command="+param3;
+				}
+				if(param5 == "run"){
+					var parameters = document.getElementById("moretext").value;
+					var form = new FormData();
+					form.append("parameters", parameters);
+					form.append("enctype", "multipart/form-data");
+					req.open("POST","servlet/test.do?"+querry,true);
+					req.send(form);
+				}
+				else{
+				 req.open("GET","servlet/test.do?"+querry,true);
+				 req.send(null);
+				}
+			}
+			function getReadyStateHandler() {
+				if (req.readyState == 4){
+					if (req.status == 200){
+						var pattern = /></g;
+						var pattern1 = /<\//;
+						var pattern2 = />/;
+						var pattern3 = /<.*?>/;
+						var pattern4 = /<.*?\/>/;
+						var pattern5 = /<\/.*?>/;
+						var pattern6 = /<.*?>.*<\/.*?>/;
+						var divvText=req.responseText.replace(pattern, ">\n<");
+						var divvTexts=divvText.split("\n");
+						var tabtemp=0;
+						for(var divvidx=0;divvidx<divvTexts.length;divvidx++){
+							if(pattern6.test(divvTexts[divvidx])){
+								for(var tabnum=0;tabnum<tabtemp;tabnum++){
+									divvTexts[divvidx]="\t"+divvTexts[divvidx];	
+								}		
+								divvTexts[divvidx]=divvTexts[divvidx].replace(pattern1, "\t<\/");
+								divvTexts[divvidx]=divvTexts[divvidx].replace(pattern2, ">\t");
+							} else if(pattern4.test(divvTexts[divvidx])){
+								for(var tabnum=0;tabnum<tabtemp;tabnum++){
+									divvTexts[divvidx]="\t"+divvTexts[divvidx];	
+								}		
+							} else if(pattern5.test(divvTexts[divvidx])){
+								tabtemp=tabtemp-1;
+								for(var tabnum=0;tabnum<tabtemp;tabnum++){
+									divvTexts[divvidx]="\t"+divvTexts[divvidx];	
+								}		
+							} else if(pattern3.test(divvTexts[divvidx])){
+								for(var tabnum=0;tabnum<tabtemp;tabnum++){
+									divvTexts[divvidx]="\t"+divvTexts[divvidx];	
+								}		
+								tabtemp=tabtemp+1;
+							}		
+						}
+						divvText=divvTexts.join("\n");	
+						document.getElementById("divv").innerHTML="<xmp>"+divvText+"</xmp>";
+					} else {
+						document.getElementById("divv").innerHTML=req.responseText;
+						//alert("HTTP error: "+req.status);
+					}
+				}
+			}
+
+		</script>
+    </head>
+    <body>
+        <h1>Servlet Test</h1>
+	<table width=80% border=1 valign="middle" align="center">
+		<tr>
+			<th>Input</th>
+			<th>getParameters<br>run</th>
+			<th>removeFile</th>
+			<th>newIndividual<br>usingIndividual<br>releaseIndividual<br>removeIndividual<br>getFiles</th>
+			<th>getCommands</th>
+			<th>getPipelines<br>getIndividuals</th>
+		<tr align="center">
+			<td><input id="p1" type="text"/></td>
+			<td colspan="5"></td>
+		</tr>
+		<tr align="center">
+			<td><input id="p2" type="text"/></td>
+			<td colspan="5"></td>
+		</tr>
+		<tr align="center">
+			<td><input id="p3" type="text"/></td>
+			<td>command</td>
+			<td colspan="4"></td>
+		</tr>
+		<tr align="center">
+			<td><input id="p4" type="text"/></td>
+			<td>pipeline</td>
+			<td>file</td>
+			<td>id</td>
+			<td>pipeline</td>
+			<td></td>
+		</tr>
+		<tr align="center">
+			<td><input id="p5" type="text"/></td>
+			<td>action</td>
+			<td>action</td>
+			<td>action</td>
+			<td>action</td>
+			<td>action</td>
+		</tr>
+		<tr><td colspan="6"><button id="buttonn" onclick="update()">update</button></td></tr>
+		<tr><td colspan="6"><textarea name="moretext" id="moretext"></textarea></td></tr>
+		<tr><td colspan="6" style="word-break:break-all"><div id="divv"></div></td></tr>
+	</table>
+	
+    </body>
+</html>
