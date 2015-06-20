@@ -3,4 +3,5 @@ remote address: XXX.XXX.XXX.XXX
 
 test.html  	: web test interface in remote's tomcat
 pipeline.html   : configure file for commands in ~/bin  
+xypipeline	: server side java source codes
 

@@ -61,6 +61,18 @@
 	
 	<pipeline id="23andme">
 	</pipeline>
+        
+        <pipeline id="filtertestpipeline">
+		<command id="filter">
+			<program>perl</program>
+			<script>/home/gtest/filter/filter.pl</script>
+			<paramter id="input" type="string" option="-input">/home/gtest/filter/pgp100.hg19_multianno.txt</paramter>
+			<paramter id="output" type="string" option="-output">/home/gtest/filter/clinvar_filtered.txt</paramter>
+			<paramter id="options" type="string" option="-options">clinvar_20140929:('CLINSIG=pathogenic';'CLINSIG=probable-pathogenic')</paramter>
+			<stdout></stdout>
+			<stderr></stderr>
+		</command>
+	</pipeline>
 
 	<pipeline id="gatk">
 		<command id="Gtest_preprocess">
