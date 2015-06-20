@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<root>
+	<pipeline id="common">
+		<command id="List">
+			<program>ls</program>
+			<script></script>
+			<parameter id="Detail" option="-l">true</parameter>
+			<parameter id="Human" option="-h">true</parameter>
+			<stdout></stdout>
+			<stderr></stderr>
+		</command>
+		<command id="CheckLines">
+			<program>wc</program>
+			<script></script>
+			<parameter id="Lines" option="-l">true</parameter>
+			<parameter id="Target" type="string"></parameter>
+			<stdout></stdout>
+			<stderr></stderr>
+		</command>
+		<command id="Delete">
+			<program>rm</program>
+			<script></script>
+			<parameter id="Recursive" option="-r">false</parameter>
+			<parameter id="Force" option="-f">false</parameter>
+			<parameter id="Target" type="string"></parameter>
+			<stdout></stdout>
+			<stderr></stderr>
+		</command>
+		<command id="NewFolder">
+			<program>mkdir</program>
+			<script></script>
+			<parameter id="Target" type="string"></parameter>
+			<stdout></stdout>
+			<stderr></stderr>
+		</command>
+		<command id="RemoveFolder">
+			<program>rmdir</program>
+			<script></script>
+			<parameter id="Target" type="string"></parameter>
+			<stdout></stdout>
+			<stderr></stderr>
+		</command>
+	</pipeline>
+
+	<pipeline id="annovar">
+		<command id="Annovar_multianno">
+			<program>perl</program>
+			<script>/home/gtest/annovar/table_annovar.pl</script>
+			<parameter id="Input_file" type="path"></parameter>
+			<parameter id="Db_dir" type="string"></parameter>
+			<parameter id="Reference" type="string" option="-buildver">hg19</parameter>
+			<parameter id="Output_prefix" type="path" option="-out"></parameter>
+			<parameter id="Protocol" type="string" option="-protocol">refGene,1000g2014oct_all,1000g2014oct_afr,1000g2014oct_eas,1000g2014oct_eur,1000g2014oct_sas,1000g2014oct_amr,clinvar_customized_20150424,esp6500siv2_all,ljb26_sift,ljb26_pp2hdiv,ljb26_gerp++,ljb26_cadd</parameter>
+			<parameter id="Operation" type="string" option="-operation">g,f,f,f,f,f,f,f,f,f,f,f,f</parameter>
+			<parameter id="NA_string" type="string" option="-nastring">.</parameter>
+			<parameter id="If_Vcf" option="-vcfinput">false</parameter>
+			<stdout></stdout>
+			<stderr></stderr>
+		</command>
+	</pipeline>
+	
+	<pipeline id="23andme">
+	</pipeline>
+
+	<pipeline id="gatk">
+		<command id="Gtest_preprocess">
+			<program></program>
+			<script>gtest_preprocess.sh</script>
+			<parameter id="Cohort_name" type="string" option="-c"></parameter>
+			<parameter id="Sample_name" type="string" option="-s"></parameter>
+			<parameter id="Max_edit_distance" type="integer" option="-k">2</parameter>
+			<parameter id="Threads_num" type="integer" option="-t">4</parameter>
+			<parameter id="Seeds_num" type="integer" option="-l">30</parameter>
+			<parameter id="Max_reads" type="integer" option="-maxReads">10000000</parameter>
+			<parameter id="Max_inmemory" type="integer" option="-maxInMemory">1000000</parameter>
+			<stdout></stdout>
+			<stderr></stderr>
+		</command>
+		<command id="Gtest_variantcall">
+			<program></program>
+			<script>gtest_variant_call.sh</script>
+			<parameter id="Cohort_name" type="string" option="-c"></parameter>
+			<parameter id="Sample_name" type="string" option="-s"></parameter>
+			<parameter id="Stand_call_conf" type="integer" option="-scc">30</parameter>
+			<parameter id="Stand_emit_conf" type="integer" option="-sec">30</parameter>
+			<parameter id="Variant_index_parameter" type="integer" option="-vip">128000</parameter>
+			<parameter id="Variant_index_type" type="string" option="-vit">LINEAR</parameter>
+			<parameter id="Emit_ref_confidence" type="string" option="-ERC">GVCF</parameter>
+			<stdout></stdout>
+			<stderr></stderr>
+		</command>
+		<command id="Gtest_VQSR">
+			<program></program>
+			<script>gtest_VQSR.sh</script>
+			<parameter id="Cohort_name" type="string" option="-c"></parameter>
+			<parameter id="Sample_name" type="string" option="-s"></parameter>
+			<parameter id="SNP_filter_level" type="float" option="-stf">99.5</parameter>
+			<parameter id="SNP_tranche" type="string" option="-st">100.0 -tranche 99.9 -tranche 99.0 -tranche 90.0</parameter>
+			<parameter id="SNP_minNumBadVariants" type="integer" option="-sbv">1000</parameter>
+			<parameter id="SNP_maxGaussians" type="integer" option="-sg">8</parameter>
+			<parameter id="SNP_maxNegativeGaussians" type="integer" option="-sng">2</parameter>
+			<parameter id="SNP_an" type="string" option="-san">DP -an QD -an FS -an MQRankSum -an ReadPosRankSum</parameter>
+			<parameter id="INDEL_filter_level" type="float" option="-itf">99.0</parameter>
+			<parameter id="INDEL_tranche" type="string" option="-it">100.0 -tranche 99.9 -tranche 99.0 -tranche 90.0</parameter>
+			<parameter id="INDEL_minNumBadVariants" type="integer" option="-ibv">1000</parameter>
+			<parameter id="INDEL_maxGaussians" type="integer" option="-ig">8</parameter>
+			<parameter id="INDEL_maxNegativeGaussians" type="integer" option="-ing">2</parameter>
+			<parameter id="INDEL_an" type="string" option="-ian">DP -an QD -an FS -an SOR -an ReadPosRankSum -an MQRankSum</parameter>
+			<stdout></stdout>
+			<stderr></stderr>
+		</command>
+	</pipeline>
+</root>
