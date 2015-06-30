@@ -52,7 +52,7 @@ class Command {
 	}
 	String run(String[] parameters, String id){
 		if(parameters.length != Parameters.length)
-			return null;
+			return "Parameter Length Mismatch. recevied:"+parameters.length+ " xml:"+Parameters.length;//null;
 		ArrayList<String> cmd_temp = new ArrayList<String>();
 		if(!"".equals(Program))
 			cmd_temp.add(Program);
@@ -60,7 +60,7 @@ class Command {
 			cmd_temp.add(Script);
 		for(int i = 0 ; i < Parameters.length ; i++){
 			if(Parameters[i].ifRequired() && "".equals(parameters[i]))
-				return null;
+				return "Required parameter is empty.";//null;
 			if("".equals(Parameters[i].getType()) && !"".equals(Parameters[i].getOption())){
 				if(!"".equals(parameters[i]) && parameters[i].equals("true") || "".equals(parameters[i]) && Parameters[i].getDefault().equals("true"))
 					cmd_temp.add(Parameters[i].getOption());

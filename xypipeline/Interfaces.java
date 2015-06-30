@@ -105,6 +105,8 @@ public class Interfaces extends HttpServlet{
 //		Instance ins=(Instance) session.getAttribute("Instance");
 		String action=req.getParameter("action");
 		String a = null;
+		
+				
 		if (action.equals("run")){
 			String contentType=req.getContentType();
 			if(contentType.indexOf("multipart/form-data")>=0){
@@ -118,25 +120,38 @@ public class Interfaces extends HttpServlet{
 						if(fi.isFormField()&&fi.getFieldName().equals("parameters")){
 							if(session.getAttribute("Individual") != null){
 								String id = ((IndividualReader) session.getAttribute("Individual")).getId();
-								a = PipelineReader.getCommand(req.getParameter("pipeline"), Integer.parseInt(req.getParameter("command"))).run(fi.getString().split(","),id);
+								/* 2015.6.30 Change:
+								 *    the splitter of parameters is changed from ',' to '!'. 
+								 *    The reason is that there is the splitter of filter's options is the same as ','. 
+								 *    Change2
+								 *    The split("!") is replaced with split("!",-1).
+								 *    Because the one parameter split function does not store empty element after splitting string with splitter.*/
+								a = PipelineReader.getCommand(req.getParameter("pipeline"), Integer.parseInt(req.getParameter("command"))).run(fi.getString().split("!",-1),id);
+								//a +="  pipeline:"+req.getParameter("pipeline")+"  command:"+req.getParameter("command")+"   params:"+fi.getString()+" length:"+fi.getString().split("!",-1).length+" id:"+id;
 							}
 							res.setStatus(200);
 						}
 					}
 				}catch(Exception e){
 					e.printStackTrace();
+					a+="  Exception:"+e;
 				}finally{
 				}
 			}
 		}
+		
+		
 		PrintWriter out;
-
+		/*
 		out = res.getWriter();
+		out.print("action: "+action+" ");
+		out.print("Pipeline:");
 		out.print(req.getParameter("pipeline"));
-		out.print(" ");
+		out.print(" Command:");
 		out.print(req.getParameter("command"));
+		out.println("a rslt:"+a);
 		out.close();
-
+        */
 		if(a!=null){
 			if (GzipUtils.isGzipSupported(req) && !GzipUtils.isGzipDisabled(req) && a.length()>1024*16){
 				out = GzipUtils.getGzipWriter(res);
@@ -147,6 +162,8 @@ public class Interfaces extends HttpServlet{
 			out.print(a);
 			out.close();
 		}
+		
+		
 	}
 	public static String md5 (String s){
 		char hexDigits[] = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
