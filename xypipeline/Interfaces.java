@@ -130,6 +130,13 @@ public class Interfaces extends HttpServlet{
 			}
 		}
 		PrintWriter out;
+
+		out = res.getWriter();
+		out.print(req.getParameter("pipeline"));
+		out.print(" ");
+		out.print(req.getParameter("command"));
+		out.close();
+
 		if(a!=null){
 			if (GzipUtils.isGzipSupported(req) && !GzipUtils.isGzipDisabled(req) && a.length()>1024*16){
 				out = GzipUtils.getGzipWriter(res);
